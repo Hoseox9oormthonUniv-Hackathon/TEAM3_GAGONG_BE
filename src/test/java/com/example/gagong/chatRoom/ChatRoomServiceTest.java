@@ -1,4 +1,4 @@
-package com.example.gagong.ChatRoom;
+package com.example.gagong.chatRoom;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
