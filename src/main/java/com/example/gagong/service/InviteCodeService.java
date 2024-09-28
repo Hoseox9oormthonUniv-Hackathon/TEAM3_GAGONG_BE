@@ -20,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InviteCodeService {
 
-	private InviteCodeRepository inviteCodeRepository;
-	private ChatRoomService chatRoomService;
+	private final InviteCodeRepository inviteCodeRepository;
+	private final ChatRoomService chatRoomService;
 
 	@Transactional
 	public CreateInviteCodeResponseDto createInviteCode(

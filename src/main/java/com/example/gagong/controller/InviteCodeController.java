@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InviteCodeController {
 
-	private InviteCodeService inviteCodeService;
+	private final InviteCodeService inviteCodeService;
 
 	@PostMapping("/api/invite-code")
 	public ResponseEntity<CreateInviteCodeResponseDto> createInviteCode(

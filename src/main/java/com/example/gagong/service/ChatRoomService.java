@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-	private ChatRoomRepository chatRoomRepository;
-	private InviteCodeRepository inviteCodeRepository;
+	private final ChatRoomRepository chatRoomRepository;
+	private final InviteCodeRepository inviteCodeRepository;
 
 	public void createChatRoom(ChatRoomRequest request) {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
