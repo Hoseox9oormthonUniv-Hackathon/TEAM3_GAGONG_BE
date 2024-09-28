@@ -53,6 +53,7 @@ public class ChatRoomServiceTest {
 
 		// then
 		verify(chatRoomRepository).save(any(ChatRoom.class));
+		assertThat(member.getChatRoom()).isNotNull();
 	}
 
 	@DisplayName("초대코드를 통해 채팅방에 회원을 추가한다.")
