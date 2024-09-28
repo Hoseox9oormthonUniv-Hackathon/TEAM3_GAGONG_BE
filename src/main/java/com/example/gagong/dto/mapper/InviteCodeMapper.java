@@ -1,7 +1,5 @@
 package com.example.gagong.dto.mapper;
 
-import java.util.List;
-
 import com.example.gagong.dto.request.CreateInviteCodeRequestDto;
 import com.example.gagong.entity.InviteCode;
 import com.example.gagong.entity.Member;
@@ -17,10 +15,6 @@ public class InviteCodeMapper {
 		int code,
 		Member member
 	) {
-		return InviteCode.builder()
-			.code(code)
-			.familyName(requestDto.familyName())
-			.members(List.of(member))
-			.build();
+		return new InviteCode(code, requestDto.familyName(), member);
 	}
 }
