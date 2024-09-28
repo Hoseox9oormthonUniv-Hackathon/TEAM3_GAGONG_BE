@@ -41,4 +41,14 @@ public class InviteCode {
 	@JoinColumn(name = "chatRoom_id")
 	private ChatRoom chatRoom;
 
+	public InviteCode(int code, String familyName, Member member) {
+		this.code = code;
+		this.familyName = familyName;
+		updateInviteCode(member);
+	}
+
+	public void updateInviteCode(Member member) {
+		this.members.add(member);
+		member.addInviteCode(this);
+	}
 }

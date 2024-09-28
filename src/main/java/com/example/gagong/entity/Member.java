@@ -50,4 +50,8 @@ public class Member {
 	public void addChatRoom(ChatRoom chatRoom) {
 		this.chatRoom = chatRoom;
 	}
+
+	public void addInviteCode(InviteCode inviteCode) {
+		this.inviteCode = inviteCode;
+	}
 }
