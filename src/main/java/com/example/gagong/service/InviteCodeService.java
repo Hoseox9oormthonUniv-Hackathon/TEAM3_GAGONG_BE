@@ -21,57 +21,56 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InviteCodeService {
 
-	private final InviteCodeRepository inviteCodeRepository;
-	private final ChatRoomService chatRoomService;
-	private final MemberRepository memberRepository;
+    private final InviteCodeRepository inviteCodeRepository;
+    private final ChatRoomService chatRoomService;
+    private final MemberRepository memberRepository;
 
-	@Transactional
-	public CreateInviteCodeResponseDto createInviteCode(
-		CreateInviteCodeRequestDto requestDto,
-		Member member
-	) {
-		try {
-			int randomCode = createRandomCode();
-			InviteCode newInviteCode = inviteCodeRepository.save(
-				InviteCodeMapper.toInviteCode(requestDto, randomCode, member)
-			);
+    @Transactional
+    public CreateInviteCodeResponseDto createInviteCode(
+        CreateInviteCodeRequestDto requestDto,
+        Member member
+    ) {
+        try {
+            int randomCode = createRandomCode();
+            InviteCode newInviteCode = inviteCodeRepository.save(
+                InviteCodeMapper.toInviteCode(requestDto, randomCode, member)
+            );
 
-			newInviteCode.updateInviteCode(member);
-			chatRoomService.createChatRoom(new ChatRoomRequest(randomCode, member));
-			memberRepository.save(member);
+            newInviteCode.updateInviteCode(member);
+            chatRoomService.createChatRoom(new ChatRoomRequest(randomCode, member));
+            memberRepository.save(member);
 
-			return new CreateInviteCodeResponseDto(newInviteCode.getCode());
-		} catch (Exception e) {
-			throw new IllegalArgumentException("초대코드 생성에 실패했습니다.");
-		}
-	}
+            return new CreateInviteCodeResponseDto(newInviteCode.getCode());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("초대코드 생성에 실패했습니다.");
+        }
+    }
 
-	private int createRandomCode() {
-		int code;
-		do {
-			code = (int)(Math.random() * 900000) + 100000; // 100000부터 999999까지의 6자리 숫자 생성
-		} while (inviteCodeRepository.existsByCode(code));
+    private int createRandomCode() {
+        int code;
+        do {
+            code = (int)(Math.random() * 900000) + 100000; // 100000부터 999999까지의 6자리 숫자 생성
+        } while (inviteCodeRepository.existsByCode(code));
 
-		return code;
-	}
+        return code;
+    }
+@Transactional
+    public EntryInviteCodeResponse entryInviteCode(int code, Member member) {
+        try {
+            InviteCode inviteCode = getInviteCodeByCode(code);
+            inviteCode.updateInviteCode(member);
 
-	@Transactional
-	public EntryInviteCodeResponse entryInviteCode(int code, Member member) {
-		try {
-			InviteCode inviteCode = getInviteCodeByCode(code);
-			inviteCode.updateInviteCode(member);
+            chatRoomService.inviteMemberToChatRoom(new ChatRoomRequest(code, member));
+            memberRepository.save(member);
 
-			chatRoomService.inviteMemberToChatRoom(new ChatRoomRequest(code, member));
-			memberRepository.save(member);
+            return new EntryInviteCodeResponse(true);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("초대코드가 정상적이지 않습니다.");
+        }
+    }
 
-			return new EntryInviteCodeResponse(true);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("초대코드가 정상적이지 않습니다.");
-		}
-	}
-
-	private InviteCode getInviteCodeByCode(int code) {
-		return inviteCodeRepository.findByCode(code)
-			.orElseThrow(() -> new NoSuchElementException("일치하는 초대코드를 찾을 수 없습니다."));
-	}
+    private InviteCode getInviteCodeByCode(int code) {
+        return inviteCodeRepository.findByCode(code)
+            .orElseThrow(() -> new NoSuchElementException("일치하는 초대코드를 찾을 수 없습니다."));
+    }
 }

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class Todo {
+public class Todo extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,9 @@ public class Todo {
 
 	@Column(name = "title", nullable = false)
 	private String title;
+
+	@Column(name = "completed", nullable = false, columnDefinition = "boolean default false")
+	private boolean completed;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "inviteCode_id")
@@ -39,4 +42,19 @@ public class Todo {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id")
 	private Member manager;
+
+	public Todo complete() {
+		this.completed = true;
+		return this;
+	}
+
+	public Todo addManager(Member member) {
+		this.manager = member;
+		return this;
+	}
+
+	public Todo updateTitle(String title) {
+		this.title = title;
+		return this;
+	}
 }

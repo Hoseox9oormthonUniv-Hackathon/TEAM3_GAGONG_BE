@@ -28,7 +28,7 @@ public class InviteCode {
 	@Column(name = "inviteCode_id", nullable = false)
 	private Long id;
 
-	@Column(name = "inviteCode", nullable = false, unique = true)
+	@Column(name = "code", nullable = false, unique = true)
 	private int code;
 
 	@Column(name = "familyName", nullable = false)

@@ -34,6 +34,7 @@ public class ChatRoomService {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
 		ChatRoom chatRoom = getChatRoomByInviteCode(inviteCode);
 		chatRoom.updateChatRoom(request.member());
+
 		chatRoomRepository.save(chatRoom);
 	}
 

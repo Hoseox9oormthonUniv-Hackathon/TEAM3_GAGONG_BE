@@ -64,6 +64,7 @@ public class Member implements UserDetails {
 		this.inviteCode = inviteCode;
 	}
 
+	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of();
 	}
