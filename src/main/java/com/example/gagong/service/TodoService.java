@@ -15,6 +15,7 @@ import com.example.gagong.dto.response.MainTodoResponse;
 import com.example.gagong.dto.response.TodoResponse;
 import com.example.gagong.entity.Member;
 import com.example.gagong.entity.Todo;
+import com.example.gagong.repository.MemberRepository;
 import com.example.gagong.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,24 +26,32 @@ import lombok.RequiredArgsConstructor;
 public class TodoService {
 
 	private final TodoRepository todoRepository;
+	private final MemberRepository memberRepository;
 
 	@Transactional
 	public boolean create(Member author, CreateTodoRequest request) {
 		todoRepository.save(TodoMapper.todoFromCreateTodoRequest(request, author, author.getInviteCode()));
-
 		return true;
 	}
 
 	public TodoResponse getAllTodos(Member member) {
-		List<Todo> todayTodos = todoRepository.findByInviteCodeToday(LocalDate.now(), member.getInviteCode());
-		List<Todo> pastTodos = todoRepository.findAllBeforeCurrentDate(LocalDate.now(), member.getInviteCode());
+		Member loadMember = memberRepository.findById(member.getId())
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+		LocalDate today = LocalDate.now();
+		List<Todo> todayTodos = todoRepository.findByInviteCodeToday(loadMember.getInviteCode().getId(), today);
+		List<Todo> pastTodos = todoRepository.findAllBeforeCurrentDate(loadMember.getInviteCode().getId(), today);
+
+		System.out.println("asdasdsd : " + loadMember.getInviteCode().getId());
+		System.out.println(todayTodos.toString());
+		System.out.println(pastTodos.toString());
 
 		return TodoResponse.of(todayTodos, pastTodos);
 	}
 
 	public MainTodoResponse getTodosByMain(Member member) {
 		Pageable pageable = PageRequest.of(0, 3);
-		List<Todo> mainTodos = todoRepository.mainTodoList(member.getInviteCode(), LocalDate.now(), pageable);
+		List<Todo> mainTodos = todoRepository.mainTodoList(member.getInviteCode().getId(), pageable);
 
 		return MainTodoResponse.of(mainTodos);
 	}

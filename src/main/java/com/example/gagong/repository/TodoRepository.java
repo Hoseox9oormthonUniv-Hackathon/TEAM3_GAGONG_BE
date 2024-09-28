@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.gagong.entity.InviteCode;
 import com.example.gagong.entity.Todo;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
@@ -16,26 +15,26 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 	@Query("SELECT t FROM Todo t "
 		+ "JOIN FETCH t.author a "
 		+ "JOIN FETCH t.manager m "
-		+ "WHERE t.inviteCode = :inviteCode "
+		+ "WHERE t.inviteCode.id = :inviteCodeId "
 		+ "AND t.completed = false "
-		+ "AND DATE(t.createdAt) = :now "
+		+ "AND t.createdAt = :date "
 		+ "ORDER BY t.createdAt DESC")
-	List<Todo> findAllBeforeCurrentDate(@Param("now") LocalDate now, @Param("inviteCode") InviteCode inviteCode);
+	List<Todo> findAllBeforeCurrentDate(@Param("inviteCodeId") Long inviteCodeId, @Param("date") LocalDate date);
 
 	@Query("SELECT t FROM Todo t "
 		+ "JOIN FETCH t.author a "
 		+ "JOIN FETCH t.manager m "
-		+ "WHERE t.inviteCode = :inviteCode "
+		+ "WHERE t.inviteCode.id = :inviteCodeId "
 		+ "AND t.completed = false "
-		+ "AND DATE(t.createdAt) = :now")
-	List<Todo> findByInviteCodeToday(@Param("now") LocalDate now, @Param("inviteCode") InviteCode inviteCode);
+		+ "AND t.createdAt = :date")
+	List<Todo> findByInviteCodeToday(@Param("inviteCodeId") Long inviteCodeId, @Param("date") LocalDate date);
 
 	@Query("SELECT t FROM Todo t "
 		+ "JOIN FETCH t.author a "
 		+ "JOIN FETCH t.manager m "
-		+ "WHERE t.inviteCode = :inviteCode "
+		+ "WHERE t.inviteCode.id = :inviteCodeId "
 		+ "AND t.completed = false "
-		+ "AND DATE(t.createdAt) = :now "
+		+ "AND t.createdAt = CURRENT_DATE "
 		+ "ORDER BY t.createdAt DESC")
-	List<Todo> mainTodoList(@Param("inviteCode") InviteCode inviteCode, @Param("now") LocalDate now, Pageable pageable);
+	List<Todo> mainTodoList(@Param("inviteCodeId") Long inviteCodeId, Pageable pageable);
 }

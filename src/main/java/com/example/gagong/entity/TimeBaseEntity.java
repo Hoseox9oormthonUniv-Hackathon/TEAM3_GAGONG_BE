@@ -1,5 +1,6 @@
 package com.example.gagong.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +17,7 @@ import lombok.Getter;
 public abstract class TimeBaseEntity {
 
 	@CreatedDate
-	private LocalDateTime createdAt;
+	private LocalDate createdAt;
 
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
