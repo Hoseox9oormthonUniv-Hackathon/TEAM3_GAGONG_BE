@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,12 +36,15 @@ public class Member {
 	private String nickname;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "chatRoom_id")
 	private ChatRoom chatRoom;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "inviteCode_id")
 	private InviteCode inviteCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "calendar_id")
 	private Calendar calendar;
 
 }
