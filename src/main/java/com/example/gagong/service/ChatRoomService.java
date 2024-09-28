@@ -1,7 +1,6 @@
 package com.example.gagong.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gagong.dto.mapper.ChatRoomMapper;
 import com.example.gagong.dto.request.ChatRoomRequest;
@@ -19,13 +18,11 @@ public class ChatRoomService {
 	private ChatRoomRepository chatRoomRepository;
 	private InviteCodeRepository inviteCodeRepository;
 
-	@Transactional
 	public void createChatRoom(ChatRoomRequest request) {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
 		chatRoomRepository.save(ChatRoomMapper.toChatRoom(inviteCode, request.member()));
 	}
 
-	@Transactional
 	public void inviteMemberToChatRoom(ChatRoomRequest request) {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
 		ChatRoom chatRoom = getChatRoomByInviteCode(inviteCode);

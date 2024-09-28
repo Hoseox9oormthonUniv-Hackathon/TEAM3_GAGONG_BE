@@ -1,6 +1,6 @@
 package com.example.gagong.dto.response;
 
-public record InviteCodeResponseDto(
+public record CreateInviteCodeResponseDto(
 
 	int code
 ) {

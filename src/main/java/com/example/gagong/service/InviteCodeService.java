@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gagong.dto.mapper.InviteCodeMapper;
+import com.example.gagong.dto.request.ChatRoomRequest;
 import com.example.gagong.dto.request.CreateInviteCodeRequestDto;
-import com.example.gagong.dto.response.InviteCodeResponseDto;
+import com.example.gagong.dto.response.CreateInviteCodeResponseDto;
 import com.example.gagong.entity.InviteCode;
 import com.example.gagong.entity.Member;
 import com.example.gagong.repository.InviteCodeRepository;
@@ -17,9 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class InviteCodeService {
 
 	private InviteCodeRepository inviteCodeRepository;
+	private ChatRoomService chatRoomService;
 
 	@Transactional
-	public InviteCodeResponseDto createInviteCode(
+	public CreateInviteCodeResponseDto createInviteCode(
 		CreateInviteCodeRequestDto requestDto,
 		Member member
 	) {
@@ -28,7 +30,8 @@ public class InviteCodeService {
 			InviteCode newInviteCode = inviteCodeRepository.save(
 				InviteCodeMapper.toInviteCode(requestDto, randomCode, member)
 			);
-			return new InviteCodeResponseDto(newInviteCode.getCode());
+			chatRoomService.createChatRoom(new ChatRoomRequest(randomCode, member));
+			return new CreateInviteCodeResponseDto(newInviteCode.getCode());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("초대코드 생성에 실패했습니다.");
 		}
