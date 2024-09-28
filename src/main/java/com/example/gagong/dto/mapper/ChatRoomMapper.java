@@ -1,5 +1,6 @@
 package com.example.gagong.dto.mapper;
 
+import com.example.gagong.dto.response.ChatRoomIdResponseDto;
 import com.example.gagong.entity.ChatRoom;
 import com.example.gagong.entity.InviteCode;
 import com.example.gagong.entity.Member;
@@ -12,5 +13,9 @@ public class ChatRoomMapper {
 
 	public static ChatRoom toChatRoom(InviteCode inviteCode, Member member) {
 		return new ChatRoom(inviteCode, member);
+	}
+
+	public static ChatRoomIdResponseDto toChatRoomIdResponseDto(ChatRoom chatRoom) {
+		return new ChatRoomIdResponseDto(chatRoom.getId());
 	}
 }
