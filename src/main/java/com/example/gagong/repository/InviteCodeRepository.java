@@ -8,5 +8,5 @@ import com.example.gagong.entity.InviteCode;
 
 public interface InviteCodeRepository extends JpaRepository<InviteCode, Long> {
 
-	Optional<InviteCode> findByCode(String code);
+	Optional<InviteCode> findByCode(int code);
 }

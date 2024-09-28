@@ -10,7 +10,7 @@ public class InviteCodeFixture {
 
 	public static InviteCode inviteCode() {
 		return InviteCode.builder()
-			.code("123456")
+			.code(123456)
 			.build();
 	}
 }

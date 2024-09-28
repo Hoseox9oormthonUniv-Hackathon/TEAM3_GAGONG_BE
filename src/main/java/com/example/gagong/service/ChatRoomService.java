@@ -32,7 +32,7 @@ public class ChatRoomService {
 		chatRoom.updateChatRoom(request.member());
 	}
 
-	private InviteCode getInviteByInviteCode(String code) {
+	private InviteCode getInviteByInviteCode(int code) {
 		return inviteCodeRepository.findByCode(code)
 			.orElseThrow(() -> new RuntimeException("초대코드가 일치하지 않습니다."));
 	}

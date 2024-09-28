@@ -46,7 +46,7 @@ public class ChatRoomServiceTest {
 		InviteCode inviteCode = InviteCodeFixture.inviteCode();
 		ChatRoomRequest chatRoomRequest = new ChatRoomRequest(inviteCode.getCode(), member);
 
-		given(inviteCodeRepository.findByCode(any())).willReturn(Optional.of(inviteCode));
+		given(inviteCodeRepository.findByCode(anyInt())).willReturn(Optional.of(inviteCode));
 
 		// when
 		chatRoomService.createChatRoom(chatRoomRequest);
@@ -69,7 +69,7 @@ public class ChatRoomServiceTest {
 
 		ChatRoomRequest chatRoomRequest = new ChatRoomRequest(inviteCode.getCode(), member2);
 
-		given(inviteCodeRepository.findByCode(any())).willReturn(Optional.of(inviteCode));
+		given(inviteCodeRepository.findByCode(anyInt())).willReturn(Optional.of(inviteCode));
 		given(chatRoomRepository.findByInviteCode(any())).willReturn(Optional.of(chatRoom));
 
 		// when
