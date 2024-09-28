@@ -29,7 +29,7 @@ public class InviteCode {
 	private Long id;
 
 	@Column(name = "code", nullable = false, unique = true)
-	private Integer code;
+	private int code;
 
 	@Column(name = "familyName", nullable = false)
 	private String familyName;
