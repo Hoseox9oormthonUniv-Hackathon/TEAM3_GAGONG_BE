@@ -33,6 +33,11 @@ public class ChatRoom {
 	@OneToOne(mappedBy = "inviteCode")
 	private InviteCode inviteCode;
 
+	public ChatRoom(InviteCode inviteCode, Member member) {
+		this.inviteCode = inviteCode;
+		updateChatRoom(member);
+	}
+
 	public void updateChatRoom(Member member) {
 		this.members.add(member);
 		member.addChatRoom(this);
