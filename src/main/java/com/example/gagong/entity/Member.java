@@ -58,7 +58,14 @@ public class Member implements UserDetails {
 	@JoinColumn(name = "calendar_id")
 	private Calendar calendar;
 
-	@Override
+	public void addChatRoom(ChatRoom chatRoom) {
+		this.chatRoom = chatRoom;
+	}
+
+	public void addInviteCode(InviteCode inviteCode) {
+		this.inviteCode = inviteCode;
+
+  @Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of();
 	}
