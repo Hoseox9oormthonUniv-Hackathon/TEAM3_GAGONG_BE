@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,8 @@ public class ChatRoom {
 	@OneToMany(mappedBy = "chatRoom")
 	private List<Member> members = new ArrayList<>();
 
-	@OneToOne(mappedBy = "inviteCode")
+	@OneToOne
+	@JoinColumn(name = "inviteCode_id")
 	private InviteCode inviteCode;
 
 	public ChatRoom(InviteCode inviteCode, Member member) {
