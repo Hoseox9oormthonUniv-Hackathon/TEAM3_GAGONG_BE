@@ -13,6 +13,7 @@ import com.example.gagong.dto.response.EntryInviteCodeResponse;
 import com.example.gagong.entity.InviteCode;
 import com.example.gagong.entity.Member;
 import com.example.gagong.repository.InviteCodeRepository;
+import com.example.gagong.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ public class InviteCodeService {
 
 	private final InviteCodeRepository inviteCodeRepository;
 	private final ChatRoomService chatRoomService;
+	private final MemberRepository memberRepository;
 
 	@Transactional
 	public CreateInviteCodeResponseDto createInviteCode(
@@ -33,7 +35,11 @@ public class InviteCodeService {
 			InviteCode newInviteCode = inviteCodeRepository.save(
 				InviteCodeMapper.toInviteCode(requestDto, randomCode, member)
 			);
+
+			newInviteCode.updateInviteCode(member);
 			chatRoomService.createChatRoom(new ChatRoomRequest(randomCode, member));
+			memberRepository.save(member);
+
 			return new CreateInviteCodeResponseDto(newInviteCode.getCode());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("초대코드 생성에 실패했습니다.");
@@ -54,6 +60,10 @@ public class InviteCodeService {
 		try {
 			InviteCode inviteCode = getInviteCodeByCode(code);
 			inviteCode.updateInviteCode(member);
+
+			chatRoomService.inviteMemberToChatRoom(new ChatRoomRequest(code, member));
+			memberRepository.save(member);
+
 			return new EntryInviteCodeResponse(true);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("초대코드가 정상적이지 않습니다.");

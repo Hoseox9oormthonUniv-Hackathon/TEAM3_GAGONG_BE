@@ -24,13 +24,17 @@ public class ChatRoomService {
 
 	public void createChatRoom(ChatRoomRequest request) {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
-		chatRoomRepository.save(ChatRoomMapper.toChatRoom(inviteCode, request.member()));
+		ChatRoom chatRoom = ChatRoomMapper.toChatRoom(inviteCode, request.member());
+
+		chatRoom.updateChatRoom(request.member());
+		chatRoomRepository.save(chatRoom);
 	}
 
 	public void inviteMemberToChatRoom(ChatRoomRequest request) {
 		InviteCode inviteCode = getInviteByInviteCode(request.code());
 		ChatRoom chatRoom = getChatRoomByInviteCode(inviteCode);
 		chatRoom.updateChatRoom(request.member());
+		chatRoomRepository.save(chatRoom);
 	}
 
 	private InviteCode getInviteByInviteCode(int code) {
