@@ -1,13 +1,12 @@
 package com.example.gagong.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,11 +26,16 @@ public class ChatMessage {
 	@Column(name = "message", nullable = false)
 	private String message;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "chatRoom_id")
-	private ChatRoom chatRoom;
+	private long chatRoomId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+	private long authorId;
+
+	private LocalDateTime createdAt;
+
+	public ChatMessage(String message, Long chatRoomId, Long authorId) {
+		this.message = message;
+		this.chatRoomId = chatRoomId;
+		this.authorId = authorId;
+		this.createdAt = LocalDateTime.now();
+	}
 }
