@@ -47,4 +47,7 @@ public class Member {
 	@JoinColumn(name = "calendar_id")
 	private Calendar calendar;
 
+	public void addChatRoom(ChatRoom chatRoom) {
+		this.chatRoom = chatRoom;
+	}
 }
