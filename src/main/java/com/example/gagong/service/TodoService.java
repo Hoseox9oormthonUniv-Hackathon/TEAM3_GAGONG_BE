@@ -1,8 +1,10 @@
 package com.example.gagong.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.gagong.dto.mapper.TodoMapper;
 import com.example.gagong.dto.request.CreateTodoRequest;
 import com.example.gagong.dto.request.UpdateTodoRequest;
-import com.example.gagong.dto.response.MainTodoResponse;
+import com.example.gagong.dto.response.TodoOne;
 import com.example.gagong.dto.response.TodoResponse;
 import com.example.gagong.entity.Member;
 import com.example.gagong.entity.Todo;
@@ -39,21 +41,43 @@ public class TodoService {
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
 		LocalDate today = LocalDate.now();
-		List<Todo> todayTodos = todoRepository.findByInviteCodeToday(loadMember.getInviteCode().getId(), today);
+		List<Todo> todayTodos = todoRepository.findByInviteCode_IdAndCompletedFalseAndCreatedAt(
+			loadMember.getInviteCode().getId(), today);
 		List<Todo> pastTodos = todoRepository.findAllBeforeCurrentDate(loadMember.getInviteCode().getId(), today);
+		List<TodoOne> todoOnes = new ArrayList<>();
 
-		System.out.println("asdasdsd : " + loadMember.getInviteCode().getId());
-		System.out.println(todayTodos.toString());
-		System.out.println(pastTodos.toString());
+		for (Todo todo : todayTodos) {
+			String author = todo.getAuthor().getNickname();
+			String manager;
+			if (todo.getManager() == null) {
+				todoOnes.add(TodoOne.of(todo.getId(), todo.getTitle(), author, ""));
+			} else {
+				manager = todo.getManager().getNickname();
+				todoOnes.add(TodoOne.of(todo.getId(), todo.getTitle(), author, manager));
+			}
+		}
 
-		return TodoResponse.of(todayTodos, pastTodos);
+		return TodoResponse.of(todoOnes, pastTodos);
 	}
 
-	public MainTodoResponse getTodosByMain(Member member) {
+	public List<TodoOne> getTodosByMain(Member member) {
 		Pageable pageable = PageRequest.of(0, 3);
-		List<Todo> mainTodos = todoRepository.mainTodoList(member.getInviteCode().getId(), pageable);
+		LocalDate today = LocalDate.now();
+		Page<Todo> mainTodos = todoRepository.findByInviteCode_IdAndCompletedFalseAndCreatedAt(
+			member.getInviteCode().getId(), today, pageable);
 
-		return MainTodoResponse.of(mainTodos);
+		List<TodoOne> todoOnes = new ArrayList<>();
+		for (Todo todo : mainTodos) {
+			String author = todo.getAuthor().getNickname();
+			String manager;
+			if (todo.getManager() == null) {
+				todoOnes.add(TodoOne.of(todo.getId(), todo.getTitle(), author, ""));
+			} else {
+				manager = todo.getManager().getNickname();
+				todoOnes.add(TodoOne.of(todo.getId(), todo.getTitle(), author, manager));
+			}
+		}
+		return todoOnes;
 	}
 
 	@Transactional

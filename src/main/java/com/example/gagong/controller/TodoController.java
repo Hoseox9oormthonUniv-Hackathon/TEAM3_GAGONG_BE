@@ -1,5 +1,7 @@
 package com.example.gagong.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gagong.dto.request.CreateTodoRequest;
 import com.example.gagong.dto.request.UpdateTodoRequest;
-import com.example.gagong.dto.response.MainTodoResponse;
+import com.example.gagong.dto.response.TodoOne;
 import com.example.gagong.dto.response.TodoResponse;
 import com.example.gagong.entity.Member;
 import com.example.gagong.service.TodoService;
@@ -33,7 +35,7 @@ public class TodoController {
 	}
 
 	@GetMapping("/main-todo")
-	public ResponseEntity<MainTodoResponse> getTodosByMain(@AuthenticationPrincipal Member member) {
+	public ResponseEntity<List<TodoOne>> getTodosByMain(@AuthenticationPrincipal Member member) {
 		return ResponseEntity.ok(todoService.getTodosByMain(member));
 	}
 
