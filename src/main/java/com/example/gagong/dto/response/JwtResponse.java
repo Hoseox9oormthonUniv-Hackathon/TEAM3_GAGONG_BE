@@ -5,11 +5,12 @@ import lombok.Builder;
 public record JwtResponse(
 	String accessToken,
 	String refreshToken,
-	String tokenType
+	String tokenType,
+	boolean isInviteCode
 ) {
 
 	@Builder
-	public JwtResponse(String accessToken, String refreshToken) {
-		this(accessToken, refreshToken, "Bearer");
+	public JwtResponse(String accessToken, String refreshToken, boolean isInviteCode) {
+		this(accessToken, refreshToken, "Bearer", isInviteCode);
 	}
 }

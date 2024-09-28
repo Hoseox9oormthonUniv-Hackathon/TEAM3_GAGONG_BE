@@ -32,7 +32,7 @@ public class JwtProvider {
 		this.customUserDetailsService = CustomUserDetailsService;
 	}
 
-	public JwtResponse createToken(String loginId) {
+	public JwtResponse createToken(String loginId, boolean isInviteCode) {
 		Date now = new Date();
 		long accessTokenExpired = 30 * 60 * 1000L;  //30분
 		long refreshTokenExpired = 7L * 24 * 60 * 60 * 1000; //7일
@@ -57,6 +57,36 @@ public class JwtProvider {
 		return JwtResponse.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
+			.isInviteCode(isInviteCode)
+			.build();
+	}
+
+	public JwtResponse createToken2(String loginId) {
+		Date now = new Date();
+		long accessTokenExpired = 30 * 60 * 1000L;  //30분
+		long refreshTokenExpired = 7L * 24 * 60 * 60 * 1000; //7일
+
+		Date accessTokenExpiredTime = new Date(now.getTime() + accessTokenExpired);
+		Date refreshTokenExpiredTime = new Date(now.getTime() + refreshTokenExpired);
+		Claims claims = Jwts.claims().setSubject(loginId);
+
+		String accessToken = Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(now)
+			.setExpiration(accessTokenExpiredTime)
+			.signWith(key, SignatureAlgorithm.HS256)
+			.compact();
+
+		String refreshToken = Jwts.builder()
+			.setClaims(claims)
+			.setExpiration(refreshTokenExpiredTime)
+			.signWith(key, SignatureAlgorithm.HS256)
+			.compact();
+
+		return JwtResponse.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.isInviteCode(true)
 			.build();
 	}
 
