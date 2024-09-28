@@ -36,12 +36,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		}
 	}
 
-	private String resolveToken(HttpServletRequest servletRequest) throws Exception {
+	private String resolveToken(HttpServletRequest servletRequest) {
 		String token = servletRequest.getHeader("Authorization");
 		if (token == null || !token.startsWith("Bearer "))
-			//throw new CustomException(ErrorCode.CLAIMS_NOT_FOUND);
+			throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
 
-			return token.substring(7);
 		return token.substring(7);
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gagong.config.jwt.JwtProvider;
 import com.example.gagong.dto.mapper.UserMapper;
+import com.example.gagong.dto.request.ReissueRequest;
 import com.example.gagong.dto.request.SigninRequest;
 import com.example.gagong.dto.request.SignupRequest;
 import com.example.gagong.dto.response.JwtResponse;
@@ -24,12 +25,14 @@ public class AuthService {
 	private final JwtProvider jwtProvider;
 
 	@Transactional
-	public void signup(SignupRequest request) {
+	public boolean signup(SignupRequest request) {
 		if (memberRepository.existsByLoginId(request.loginId())) {
 			throw new IllegalArgumentException("이미 사용중인 아이디입니다.");
 		}
 
 		memberRepository.save(UserMapper.memberFromSignupRequest(request, passwordEncoder));
+
+		return true;
 	}
 
 	public JwtResponse signin(SigninRequest request) {
@@ -40,5 +43,22 @@ public class AuthService {
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
 
 		return jwtProvider.createToken(member.getLoginId());
+	}
+
+	public JwtResponse reissue(ReissueRequest request) {
+		Member member = memberRepository.findByLoginId(jwtProvider.parseClaims(request.refreshToken()).getSubject())
+			.orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
+
+		return jwtProvider.createToken(member.getLoginId());
+	}
+
+	@Transactional
+	public Boolean delete(Member member) {
+		try {
+			memberRepository.delete(member);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

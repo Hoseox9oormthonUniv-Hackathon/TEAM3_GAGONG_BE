@@ -12,14 +12,9 @@ import org.springframework.stereotype.Component;
 import com.example.gagong.config.CustomUserDetailsService;
 import com.example.gagong.dto.response.JwtResponse;
 
-import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -27,8 +22,6 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
 
 	private final Key key;
-	private final long ACCESSTOKEN_VALIDTIME = 30 * 60 * 1000L; // 30분
-	private final long REFRESHTOKEN_VALIDTIME = 7L * 24 * 60 * 60 * 1000; // 7일
 
 	private final CustomUserDetailsService customUserDetailsService;
 
@@ -41,8 +34,11 @@ public class JwtProvider {
 
 	public JwtResponse createToken(String loginId) {
 		Date now = new Date();
-		Date accessTokenExpiredTime = new Date(now.getTime() + ACCESSTOKEN_VALIDTIME);
-		Date refreshTokenExpiredTime = new Date(now.getTime() + REFRESHTOKEN_VALIDTIME);
+		long accessTokenExpired = 30 * 60 * 1000L;  //30분
+		long refreshTokenExpired = 7L * 24 * 60 * 60 * 1000; //7일
+
+		Date accessTokenExpiredTime = new Date(now.getTime() + accessTokenExpired);
+		Date refreshTokenExpiredTime = new Date(now.getTime() + refreshTokenExpired);
 		Claims claims = Jwts.claims().setSubject(loginId);
 
 		String accessToken = Jwts.builder()
@@ -64,42 +60,34 @@ public class JwtProvider {
 			.build();
 	}
 
-	public boolean validateToken(String token) throws Exception {
+	public boolean validateToken(String token) {
 		try {
 			Jwts.parserBuilder()
 				.setSigningKey(key)
 				.build()
 				.parseClaimsJws(token);
 			return true;
-		} catch (SecurityException | MalformedJwtException | SignatureException e) {
-			return false;
-		} catch (UnsupportedJwtException e) {
-			return false;
-		} catch (ExpiredJwtException e) {
-			return false;
-		} catch (IllegalArgumentException e) {
-			return false;
-		} catch (ClaimJwtException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	public Authentication getAuthentication(String accessToken) throws Exception {
+	public Authentication getAuthentication(String accessToken) {
 		Claims claims = parseClaims(accessToken);
 
 		UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
-		return new UsernamePasswordAuthenticationToken(principal, "");
+		return new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
 	}
 
-	public Claims parseClaims(String accessToken) {
+	public Claims parseClaims(String token) {
 		try {
 			return Jwts.parserBuilder()
 				.setSigningKey(key)
 				.build()
-				.parseClaimsJws(accessToken)
+				.parseClaimsJws(token)
 				.getBody();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			return null;
 		}
 	}
 }
